@@ -3,7 +3,9 @@ import { modelSync, models } from "./models/index.js";
 const User = models.user;
 const app = express()
 const PORT = 3000;
+
 modelSync();
+
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/user/create', async (req, res) => {
@@ -16,6 +18,13 @@ app.get('/user/create', async (req, res) => {
     })
     res.json({
         msg: '/user/create',
+        data
+    })
+});
+app.get('/user/', async (req, res) => {
+    const data = await User.findAndCountAll();
+    res.json({
+        msg: '/user/',
         data
     })
 });
