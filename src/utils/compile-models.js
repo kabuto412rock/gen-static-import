@@ -11,14 +11,17 @@ async function main() {
     let fileNames = modelFiles.filter((name) => !name.includes('index.js')).map((name) => name.replace('.js', ''))
     let modelsCodeStr = '// 請勿手動更新此檔案，此檔案為compile-model.js生成的程式碼\n'
     for (const file of fileNames) {
-        modelsCodeStr += `import ${file} from './${file}'\n`
+        modelsCodeStr += `import ${file} from './${file}.js'\n`
     }
-    modelsCodeStr += 'export default models = {\n'
+    modelsCodeStr += `import sequelize from "../instances/sequelize.js";\n`;
+    modelsCodeStr += 'export const models = {\n'
     for (const file of fileNames) {
         modelsCodeStr += `    ${file},\n`
     }
 
-    modelsCodeStr += '}'
+    modelsCodeStr += '}\n'
+    modelsCodeStr += `export function modelSync() {
+    sequelize.sync();\n}`
     // console.log(modelsCodeStr);
 
     const newFilePath = path.join(modelsDirPath, 'index.js').replace('file:', '');

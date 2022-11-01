@@ -1,17 +1,22 @@
 import express from "express";
-import models from "./models";
-
+import { modelSync, models } from "./models/index.js";
+const User = models.user;
 const app = express()
 const PORT = 3000;
+modelSync();
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/user/create', (req, res) => {
-    const { name } = req.body;
+app.get('/user/create', async (req, res) => {
+    const { name, birth } = req.body;
+    if (!(name && birth)) return res.json({ msg: '失敗' })
 
-    models.bank
+    const data = await User.create({
+        username: name,
+        birthday: birth
+    })
     res.json({
         msg: '/user/create',
-        name
+        data
     })
 });
 
